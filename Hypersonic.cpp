@@ -434,19 +434,16 @@ public:
 		Point new_loc = GetCurrentLoc();
 		if (direction == UP) {
 			new_loc.Set(new_loc.x(), new_loc.y() - 1);
+		} else
+		if (direction == DOWN) {
+			new_loc.Set(new_loc.x(), new_loc.y() + 1);
+		} else
+		if (direction == LEFT) {
+			new_loc.Set(new_loc.x() - 1, new_loc.y());
+		} else
+		if (direction == RIGHT) {
+			new_loc.Set(new_loc.x() + 1, new_loc.y());
 		}
-		else
-			if (direction == DOWN) {
-				new_loc.Set(new_loc.x(), new_loc.y() + 1);
-			}
-			else
-				if (direction == LEFT) {
-					new_loc.Set(new_loc.x() - 1, new_loc.y());
-				}
-				else
-					if (direction == RIGHT) {
-						new_loc.Set(new_loc.x() + 1, new_loc.y());
-					}
 		if (direction == STAY) {
 			//dont change it
 		}
@@ -455,8 +452,7 @@ public:
 
 		if (do_bomb) {
 			DoBomb(new_loc.x(), new_loc.y());
-		}
-		else {
+		} else {
 			DoMove(new_loc.x(), new_loc.y());
 		}
 
@@ -475,8 +471,7 @@ public:
 	{
 		if (x < MAP_WIDTH && x >= 0 && y < MAP_HEIGHT && y >= 0) {
 			return &grid[x][y];
-		}
-		else {
+		} else {
 			return nullptr;
 		}
 	}
@@ -792,13 +787,12 @@ private:
 			players[player_id].SetRemainingBombs(players[player_id].GetRemainingBombs() + 1);
 			this->currentScore += (is_me ? 300 : 0);
 			smth_changed = true;
+		} else
+		if (tile->GetItem() == ITEM::Range) {
+			players[player_id].SetRange(players[player_id].GetRange() + 1);
+			this->currentScore += (is_me ? 300 : 0);
+			smth_changed = true;
 		}
-		else
-			if (tile->GetItem() == ITEM::Range) {
-				players[player_id].SetRange(players[player_id].GetRange() + 1);
-				this->currentScore += (is_me ? 300 : 0);
-				smth_changed = true;
-			}
 
 		tile->SetItem(ITEM::None);
 		if (smth_changed) {
@@ -1182,17 +1176,16 @@ int main()
 					current_tile->SetLoc(x, y);
 					if (row[x] == 'X') {
 						current_tile->SetWall();
-					}
-					else
-						if (row[x] == '0' || row[x] == '1' || row[x] == '2') {
-							current_tile->SetBox(true);
-							if (row[x] == '1') {
-								current_tile->SetItem(ITEM::Range);
-							} else
-							if (row[x] == '2') {
-								current_tile->SetItem(ITEM::BombCount);
-							}
+					} else
+					if (row[x] == '0' || row[x] == '1' || row[x] == '2') {
+						current_tile->SetBox(true);
+						if (row[x] == '1') {
+							current_tile->SetItem(ITEM::Range);
+						} else
+						if (row[x] == '2') {
+							current_tile->SetItem(ITEM::BombCount);
 						}
+					}
 				}
 
 			}
@@ -1222,8 +1215,7 @@ int main()
 				ai.SetPlayerLoc(owner, x, y);
 				ai.SetPlayerBombs(owner, param1);
 				ai.SetPlayerRange(owner, param2);
-			}
-			else
+			} else
 			if (entityType == 1 && !ai.HasBombAt(x, y) && param1 == 8) {
 				//cerr << "found bomb at x" << x << "y" << y << "p1:" << param1 << endl;
 				ai.SetBomb(x, y, owner, round_num + param1, param2);
